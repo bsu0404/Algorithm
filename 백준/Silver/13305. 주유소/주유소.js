@@ -4,26 +4,19 @@ let input = fs.readFileSync(filePath).toString().split("\n");
 
 let N = parseInt(input[0]);
 let len = input[1].split(" ").map(Number);
-let cost = input[2]
-  .split(" ")
-  .map(Number)
-  .slice(0, N - 1);
-
+let costs = input[2].split(" ").map(Number);
 let sum = 0;
-let sub = 0;
+let min = costs[0];
+let current_len = 0;
 
-for (let i = len.length - 2; i >= 0; i--) {
-  len[i] += len[i + 1];
-}
-
-while (cost.length > 0) {
-  let min = Math.min(...cost);
-  let index = cost.indexOf(min);
-  cost = cost.slice(0, index);
-
-  let add = min * (len[index] - sub);
-
-  sum = sum + add;
-  sub = sub + len[index];
+for (let i = 0; i < costs.length; i++) {
+  let cost = costs[i];
+  
+  if (cost < min || i == N - 1) {
+    sum = sum + current_len * min;
+    min = cost;
+    current_len = 0;
+  }
+  current_len = current_len + len[i];
 }
 console.log(sum);
