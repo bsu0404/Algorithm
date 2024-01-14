@@ -1,89 +1,56 @@
 const fs = require("fs");
 const filePath = process.platform === "linux" ? "/dev/stdin" : "./example.txt";
-let array = fs.readFileSync(filePath).toString().trim().split("\n");
+let graph = fs.readFileSync(filePath).toString().trim().split("\n");
 
-let N = parseInt(array.shift());
+let N = parseInt(graph.shift());
 for (let i = 0; i < N; i++) {
-  array[i] = array[i].split(" ").map(Number);
+  graph[i] = graph[i].split(" ").map(Number);
 }
-let visited = new Set();
 
-const bfs = (graph, startNode) => {
-  let needVisit = [startNode]; //큐역할
+let dx = [-1, 1, 0, 0];
+let dy = [0, 0, -1, 1];
+const bfs = (visited, x, y, height) => {
+  let needVisit = [[x, y]]; //큐역할
+  visited[x][y] = 1;
   while (needVisit.length) {
-    let node = needVisit.shift(); //맨 앞에서 빼기
-    if (!visited.has(node)) {
-      // 해당 노드 방문이 처음이라면
-      visited.add(node);
-      if (graph[node]) needVisit = [...needVisit, ...graph[node]]; //맨 뒤에 넣기
-    }
-  }
-};
-let vertex;
-const make_graph = (copiedArray, height) => {
-  //정점 만들기
-  let graph = {};
-  vertex = 1;
-
-  for (let i = 0; i < N; i++) {
-    for (j = 0; j < N; j++) {
-      if (copiedArray[i][j] >= height) {
-        copiedArray[i][j] = vertex++;
-      } else {
-        copiedArray[i][j] = 0;
+    let [x, y] = needVisit.shift(); //맨 앞에서 빼기
+    for (let i = 0; i < 4; i++) {
+      let nx = x + dx[i];
+      let ny = y + dy[i];
+      if (
+        nx >= 0 &&
+        nx < N &&
+        ny >= 0 &&
+        ny < N &&
+        !visited[nx][ny] &&
+        graph[nx][ny] > height
+      ) {
+        // 해당 노드 방문이 처음이라면 , 범위 안이라면
+        visited[nx][ny] = 1;
+        needVisit = [...needVisit, [nx, ny]]; //맨 뒤에 넣기
       }
     }
   }
-
-  //간선 만들기
-  let edges = [];
-  for (let i = 0; i < N; i++) {
-    for (j = 0; j < N; j++) {
-      let current = copiedArray[i][j];
-      let left = copiedArray[i][j - 1];
-      let up = copiedArray[i - 1] ? copiedArray[i - 1][j] : 0;
-
-      if (current) {
-        if (left) {
-          edges.push([left, current]);
-        }
-        if (up) {
-          edges.push([up, current]);
-        }
-      }
-    }
-  }
-  //그래프 생성
-  edges.forEach((edge) => {
-    let [v, u] = edge;
-    if (!graph[v]) {
-      graph[v] = [];
-    }
-    graph[v].push(u);
-    if (!graph[u]) {
-      graph[u] = [];
-    }
-    graph[u].push(v);
-  });
-  return graph;
 };
+
 const cal_safe = (height) => {
-  const newArray = array.map((row) => [...row]);
-  graph = make_graph(newArray, height);
   let count = 0;
+  let visited = Array.from({ length: N }, () => Array(N).fill(0));
 
-  for (let i = 1; i < vertex; i++) {
-    if (!visited.has(i)) {
-      bfs(graph, i);
-      count++;
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      if (!visited[i][j] && graph[i][j] > height) {
+        bfs(visited, i, j, height);
+        count++;
+      }
     }
   }
-  visited = new Set();
   return count;
 };
 let max = 0;
 
 for (let i = 0; i <= 100; i++) {
+  //  비 높이
   max = Math.max(cal_safe(i), max);
 }
 console.log(max);
