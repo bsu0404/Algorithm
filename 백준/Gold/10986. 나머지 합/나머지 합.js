@@ -5,7 +5,7 @@ let input = fs.readFileSync(filePath).toString().trim().split("\n");
 let [N, M] = input[0].split(" ").map(Number);
 let array = input[1].split(" ").map(Number);
 
-let quotient = Array(M + 1).fill(0);
+let quotient = Array(M).fill(0);
 quotient[0] = 1;
 let sum = [0];
 
