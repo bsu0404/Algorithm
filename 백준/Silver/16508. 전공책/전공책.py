@@ -11,7 +11,6 @@ for i in range(len(s)):
 arr = []
 for _ in range(N):
     price, name = input().split()
-    name = "".join(sorted(name))
     arr.append([int(price), name])
 
 for i in range(1 << N):
