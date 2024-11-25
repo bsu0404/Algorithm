@@ -1,4 +1,6 @@
 from collections import deque
+import sys
+input = sys.stdin.readline
 
 
 N = int(input())
@@ -17,7 +19,7 @@ for i in range(1,N+1):
         stack.pop()
         j += 1
         ans.append("-")
-        
+
 if stack:
     print("NO")
 else:
