@@ -63,8 +63,9 @@ def getSequence(i,j,direction):
 for i in range(N):
     for j in range(N):
 
-           
-        getSequence(i,j,"r")
-        getSequence(i,j,"d")
+        if sequence[i][j]["r"] == 0:   
+            getSequence(i,j,"r")
+        if sequence[i][j]["d"] == 0:
+            getSequence(i,j,"d")
 
 print(ans)
