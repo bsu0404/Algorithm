@@ -11,7 +11,6 @@ for i in range(1, len2 + 1):
         if (str2[i-1]==str1[j-1]):
             mtx[i][j] = mtx[i-1][j-1] + str1[j-1]
         else:
-            mtx[i][j] = max(mtx[i-1][j],mtx[i][j-1])
             if len(mtx[i-1][j]) > len(mtx[i][j-1]):
                 mtx[i][j] = mtx[i-1][j]
             else:
